@@ -19,6 +19,7 @@ Clone this repo.
 
 * `npm run server` to run a dev server
 * `npm run test` to run tests
+* `npm run test:watch` watch for changes and run tests
 * `npm run test:cov` to generate test coverage
 * `npm run build` to transform es6/es7 to es5 by Babel
 * `npm run clean` to clean `build/` directory
