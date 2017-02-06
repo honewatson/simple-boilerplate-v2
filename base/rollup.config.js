@@ -4,6 +4,7 @@ import multiEntry from 'rollup-plugin-multi-entry';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import uglify from 'rollup-plugin-uglify';
+import flow from 'rollup-plugin-flow'
 export default {
     entry: 'src/index.js',
     plugins: [
@@ -59,8 +60,9 @@ export default {
             //namedExports: {'./module.js': ['foo', 'bar']}  // Default: undefined
         }),
         babel(babelrc()),
+        flow({ all: true })
     ],
     format: 'cjs',
-    dest: 'src/index.rolled.js',
+    dest: 'dist/index.rolled.js',
 
 };

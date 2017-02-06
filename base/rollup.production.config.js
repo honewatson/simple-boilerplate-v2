@@ -4,9 +4,11 @@ import multiEntry from 'rollup-plugin-multi-entry';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import uglify from 'rollup-plugin-uglify';
+import flow from 'rollup-plugin-flow'
 export default {
     entry: 'src/index.js',
     plugins: [
+        flow(),
         multiEntry(),
         nodeResolve({
             // use "jsnext:main" if possible
