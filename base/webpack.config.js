@@ -2,6 +2,8 @@ const DashboardPlugin = require('webpack-dashboard/plugin');
 const {resolve} = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const utils = require('./utils');
+
 
 const styleLoaders = [
     {
@@ -21,6 +23,7 @@ const styleLoaders = [
     }
 ]
 
+
 module.exports = {
     entry: [
 
@@ -37,7 +40,7 @@ module.exports = {
 
         './stylesheets/scss.js',
 
-    ],
+    ].concat(utils.getAllFilesFromFolder(__dirname + "/html")),
     output: {
         filename: 'dist/webpack.bundle.js',
         // the output bundle
@@ -53,7 +56,7 @@ module.exports = {
     devtool: 'inline-source-map',
 
     devServer: {
-        hot: true,
+        //hot: true,
         // enable HMR on the server
 
         contentBase: resolve(__dirname, 'dist'),
@@ -75,10 +78,18 @@ module.exports = {
             {
                 test: /\.scss$/,
                 use: ExtractTextPlugin.extract({
-                    fallbackLoader: 'style-loader',
-                    loader: styleLoaders,
+                    fallback: 'style-loader',
+                    use: styleLoaders,
                 })
             },
+            {
+                test: /\.html$/,
+                use: [
+                    "file-loader?name=[name].[ext]",
+                    "extract-loader",
+                    "template-html-loader?engine=nunjucks"
+                ]
+            }
 
         ],
     },
@@ -92,11 +103,20 @@ module.exports = {
         // prints more readable module names in the browser console on HMR updates
 
         new DashboardPlugin(),
+        // loads webpack-dashboard
 
         new ExtractTextPlugin({
             filename: 'dist/main.css',
             disable: false,
             allChunks: true
-        })
+        }),
+        // Extract css to dist/main.css
+
+        new webpack.DefinePlugin({
+            'process.env': {
+                NODE_ENV: JSON.stringify('development')
+            }
+        }),
+        // define the environment
     ],
 };

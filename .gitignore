@@ -1,0 +1,13 @@
+node_modules
+base/dist
+base/yarn.lock
+*.log
+*.pid
+*.seed
+.DS_Store
+lib
+coverage
+logs
+pids
+.idea
+simple-boilerplate
