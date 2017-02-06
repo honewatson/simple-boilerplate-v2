@@ -1,6 +1,6 @@
 import {quote} from './utils';
 
-const helloWorld = str =>
+const helloWorld = (str: string): string =>
     quote(str);
 
-helloWorld('Hello World');
+helloWorld('Hello Monkey!');

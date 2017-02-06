@@ -1,20 +1,60 @@
-var path = require('path');
-var webpack = require('webpack');
-var WebpackShellPlugin = require('webpack-shell-plugin');
+const DashboardPlugin = require('webpack-dashboard/plugin');
+const {resolve} = require('path');
+const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const utils = require('./utils');
+const WebpackShellPlugin = require('webpack-shell-plugin');
 
-var FlowBabelWebpackPlugin = require('flow-babel-webpack-plugin');
-var utils = require('./utils');
 
 module.exports = {
     entry: [
-        './src/index.js',
-        './src/stylesheets/scss.js'
+
+        './index.js',
+        // the entry point of our app
+
+        './stylesheets/scss.js',
+
     ].concat(utils.getAllFilesFromFolder(__dirname + "/html")),
     output: {
-        path: path.join(__dirname, 'js'),
-        filename: 'global.js',
-        publicPath: '/static/'
+        filename: 'js/webpack.bundle.js',
+        // the output bundle
+
+        path: resolve(__dirname, 'static'),
+
+        publicPath: '/'
+        // necessary for HMR to know where to load the hot update chunks
     },
+
+    context: resolve(__dirname, 'src'),
+
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                use: [
+                    'babel-loader',
+                ],
+                exclude: /node_modules/
+            },
+            {
+                test: /\.scss$/,
+                use: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: utils.styleLoaders,
+                })
+            },
+            {
+                test: /\.html$/,
+                use: [
+                    "file-loader?name=[name].[ext]",
+                    "extract-loader",
+                    "template-html-loader?engine=nunjucks"
+                ]
+            }
+
+        ],
+    },
+
     plugins: [
         new WebpackShellPlugin(
             {
@@ -22,34 +62,23 @@ module.exports = {
                 onBuildEnd: []
             }
         ),
+        // enable HMR globally
+
+        new webpack.NamedModulesPlugin(),
+        // prints more readable module names in the browser console on HMR updates
+
+        new ExtractTextPlugin({
+            filename: 'css/main.css',
+            disable: false,
+            allChunks: true
+        }),
+        // Extract css to dist/main.css
+
         new webpack.DefinePlugin({
             'process.env': {
-                'NODE_ENV': JSON.stringify('production')
+                NODE_ENV: JSON.stringify('production')
             }
         }),
-        new FlowBabelWebpackPlugin(),
+        // define the environment
     ],
-    module: {
-        loaders: [{
-            test: /\.js$/,
-            loaders: ['babel'],
-            include: path.join(__dirname, 'src')
-        },
-            {
-                test: /\.scss$/,
-                loader: ExtractTextPlugin.extract('style-loader', sassLoaders.join('!'))
-            },
-            {
-                test: /\.html$/,
-                loaders: [
-                    "file-loader?name=[name].[ext]",
-                    "extract-loader",
-                    "template-html-loader?engine=nunjucks"
-                ]
-            }]
-    },
-    resolve: {
-        extensions: ['', '.js', '.scss'],
-        root: [path.join(__dirname, './src')]
-    }
 };

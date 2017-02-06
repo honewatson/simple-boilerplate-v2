@@ -1,3 +1,5 @@
+const {resolve} = require('path');
+
 var getAllFilesFromFolder = function(dir) {
     var filesystem = require("fs");
     var results = [];
@@ -12,6 +14,28 @@ var getAllFilesFromFolder = function(dir) {
         return !item.match(/partial/);
     });
 };
+
+
+const styleLoaders = [
+    {
+        loader: 'css-loader',
+        options: {
+            modules: true
+        }
+    },
+    {
+        loader: 'postcss-loader'
+    },
+    {
+        loader: 'sass-loader',
+        options: {
+            includePaths: [resolve(__dirname, './src')]
+        }
+    }
+]
+
+
 module.exports = {
-    getAllFilesFromFolder: getAllFilesFromFolder
+    getAllFilesFromFolder: getAllFilesFromFolder,
+    styleLoaders: styleLoaders
 }

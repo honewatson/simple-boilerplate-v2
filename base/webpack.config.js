@@ -3,25 +3,7 @@ const {resolve} = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const utils = require('./utils');
-
-
-const styleLoaders = [
-    {
-        loader: 'css-loader',
-        options: {
-            modules: true
-        }
-    },
-    {
-        loader: 'postcss-loader'
-    },
-    {
-        loader: 'sass-loader',
-        options: {
-            includePaths: [resolve(__dirname, './src')]
-        }
-    }
-]
+const WebpackShellPlugin = require('webpack-shell-plugin');
 
 
 module.exports = {
@@ -79,7 +61,7 @@ module.exports = {
                 test: /\.scss$/,
                 use: ExtractTextPlugin.extract({
                     fallback: 'style-loader',
-                    use: styleLoaders,
+                    use: utils.styleLoaders,
                 })
             },
             {
@@ -95,7 +77,12 @@ module.exports = {
     },
 
     plugins: [
-
+        new WebpackShellPlugin(
+            {
+                onBuildStart: [],
+                onBuildEnd: []
+            }
+        ),
         new webpack.HotModuleReplacementPlugin(),
         // enable HMR globally
 
