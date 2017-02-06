@@ -22,7 +22,9 @@
     "pretest": "npm run flow && npm run build",
     "lint": "eslint src test"
   },
-  "dependencies": {},
+  "dependencies": {
+    "consolidate": "^0.14.5"
+  },
   "devDependencies": {
     "autoprefixer": "^6.7.2",
     "babel-cli": "^6.22.2",
@@ -44,7 +46,7 @@
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.9.0",
     "extract-loader": "^0.1.0",
-    "extract-text-webpack-plugin": "^1.0.1",
+    "extract-text-webpack-plugin": "v2.0.0-rc.3",
     "file-loader": "^0.10.0",
     "flow-babel-webpack-plugin": "^1.0.1",
     "flow-bin": "^0.38.0",
@@ -52,6 +54,7 @@
     "mocha": "^3.2.0",
     "node-sass": "^4.5.0",
     "nunjucks": "^3.0.0",
+    "postcss-load-config": "^1.1.0",
     "postcss-loader": "^1.2.2",
     "rollup": "^0.41.4",
     "rollup-plugin-babel": "^2.7.1",

@@ -1,98 +1,102 @@
-
-var path = require('path');
-var webpack = require('webpack');
-var WebpackShellPlugin = require('webpack-shell-plugin');
-var DashboardPlugin = require('webpack-dashboard/plugin');
-//var FlowBabelWebpackPlugin = require('flow-babel-webpack-plugin');
-var utils = require('./utils');
-const autoprefixer = require('autoprefixer');
+const DashboardPlugin = require('webpack-dashboard/plugin');
+const {resolve} = require('path');
+const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-const sassLoaders = [
-    'css-loader',
-    'postcss-loader',
-    'sass-loader?includePaths[]=' + path.resolve(__dirname, './src')
+const styleLoaders = [
+    {
+        loader: 'css-loader',
+        options: {
+            modules: true
+        }
+    },
+    {
+        loader: 'postcss-loader'
+    },
+    {
+        loader: 'sass-loader',
+        options: {
+            includePaths: [resolve(__dirname, './src')]
+        }
+    }
 ]
 
-var port = '3031';
-
 module.exports = {
+    entry: [
+
+        'webpack-dev-server/client?http://localhost:3031',
+        // bundle the client for webpack-dev-server
+        // and connect to the provided endpoint
+
+        'webpack/hot/only-dev-server',
+        // bundle the client for hot reloading
+        // only- means to only hot reload for successful updates
+
+        './index.js',
+        // the entry point of our app
+
+        './stylesheets/scss.js',
+
+    ],
+    output: {
+        filename: 'dist/webpack.bundle.js',
+        // the output bundle
+
+        path: resolve(__dirname, 'dist'),
+
+        publicPath: '/'
+        // necessary for HMR to know where to load the hot update chunks
+    },
+
+    context: resolve(__dirname, 'src'),
+
     devtool: 'inline-source-map',
 
     devServer: {
         hot: true,
         // enable HMR on the server
 
-        contentBase: path.resolve(__dirname, 'dist'),
+        contentBase: resolve(__dirname, 'dist'),
         // match the output path
 
         publicPath: '/'
         // match the output `publicPath`
     },
 
-    entry: [
-        'webpack-dev-server/client?http://localhost:' + port,
-        'webpack/hot/only-dev-server',
-        './src/index.js',
-        //'./src/stylesheets/scss.js'
-    ],//.concat(utils.getAllFilesFromFolder(__dirname + "/html")),
-    output: {
-        path: path.join(__dirname, 'dist'),
-        filename: 'bundle.webpack.js',
-        publicPath: '/dist/'
-    },
-    plugins: [
-        new WebpackShellPlugin(
-            {
-                onBuildStart: [
-                    'rm -rf js/global.js',
-                    'node_modules/node-sass/bin/node-sass src/stylesheets/base.scss ./dist/main.css'
-                ],
-                onBuildEnd: []
-            }
-        ),
-        new webpack.HotModuleReplacementPlugin(),
-        //new ExtractTextPlugin('main.css'),
-        //ExtractTextPlugin.extract({ loader:[ 'css', 'less'], fallbackLoader: 'style-loader' })
-        new webpack.DefinePlugin({
-            'process.env': {
-                NODE_ENV: JSON.stringify('development')
-            }
-        }),
-        new DashboardPlugin(),
-        //new FlowBabelWebpackPlugin(),
-    ],
     module: {
         rules: [
             {
                 test: /\.js$/,
-                loader: 'babel-loader',
-                include: [path.join(__dirname, 'src')]
+                use: [
+                    'babel-loader',
+                ],
+                exclude: /node_modules/
             },
-            // {
-            //     test: /\.scss$/,
-            //     //loader: ExtractTextPlugin.extract('style-loader', sassLoaders.join('!'))
-            //     use: ExtractTextPlugin.extract({
-            //       fallback: ['css-loader', 'postcss-loader', 'sass-loader?includePaths[]=' + path.resolve(__dirname, './src')],
-            //       use: "style-loader"
-            //     })
-            // },
-            // {
-            //     test: /\.html$/,
-            //     loaders: [
-            //         "file-loader?name=[name].[ext]",
-            //         "extract-loader",
-            //         "template-html-loader?engine=nunjucks"
-            //     ]
-            // }
-        ]
-    },
-    resolve: {
-        extensions: ['.js', '.scss'],
-        modules: [
-            path.join(__dirname, './src')
-        ]
+            {
+                test: /\.scss$/,
+                use: ExtractTextPlugin.extract({
+                    fallbackLoader: 'style-loader',
+                    loader: styleLoaders,
+                })
+            },
 
+        ],
     },
-}
-;
+
+    plugins: [
+
+        new webpack.HotModuleReplacementPlugin(),
+        // enable HMR globally
+
+        new webpack.NamedModulesPlugin(),
+        // prints more readable module names in the browser console on HMR updates
+
+        new DashboardPlugin(),
+
+        new ExtractTextPlugin({
+            filename: 'dist/main.css',
+            disable: false,
+            allChunks: true
+        })
+    ],
+};
