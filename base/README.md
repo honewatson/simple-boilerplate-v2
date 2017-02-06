@@ -1,4 +1,4 @@
-# babel-npm-boilerplate [![Build Status](https://travis-ci.org/honewatson/babel-npm-boilerplate.svg)](https://travis-ci.org/honewatson/babel-npm-boilerplate) [![npm version](https://badge.fury.io/js/babel-npm-boilerplate.svg)](http://badge.fury.io/js/babel-npm-boilerplate)
+# simple-boilerplate-v2 [![Build Status](https://travis-ci.org/honewatson/babel-npm-boilerplate.svg)](https://travis-ci.org/honewatson/babel-npm-boilerplate) [![npm version](https://badge.fury.io/js/babel-npm-boilerplate.svg)](http://badge.fury.io/js/babel-npm-boilerplate)
 
 A Boilerplate for ES6 Browser Apps using Babel, Webpack, FlowType, ESLint, Mocha and Chai
 
