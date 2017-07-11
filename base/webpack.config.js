@@ -7,7 +7,7 @@ const WebpackShellPlugin = require('webpack-shell-plugin');
 
 
 module.exports = {
-    entry: [
+    entry: () => [
 
         'webpack-dev-server/client?http://localhost:3031',
         // bundle the client for webpack-dev-server
@@ -22,9 +22,11 @@ module.exports = {
 
         './stylesheets/scss.js',
 
-    ].concat(utils.getAllFilesFromFolder(__dirname + "/html")),
+    ], 
+    // Instead of concating files use import './html/page.html' in the src/index.js file.  The html folder should be in the src folder
+    //.concat(utils.getAllFilesFromFolder(__dirname + "/html")),
     output: {
-        filename: 'dist/webpack.bundle.js',
+        filename: 'dist/main.js',
         // the output bundle
 
         path: resolve(__dirname, 'dist'),
@@ -80,10 +82,12 @@ module.exports = {
         new WebpackShellPlugin(
             {
                 onBuildStart: [],
-                onBuildEnd: []
+                onBuildEnd: ["echo '\n\n\n\n****hello there****\n\n\n\n'"]
             }
         ),
-        new webpack.HotModuleReplacementPlugin(),
+        new webpack.HotModuleReplacementPlugin({
+            multiStep: true
+        }),
         // enable HMR globally
 
         new webpack.NamedModulesPlugin(),

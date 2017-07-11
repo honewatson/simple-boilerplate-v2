@@ -1,3 +1,4 @@
+import './html/home.html';
 import {quote} from './utils';
 
 const helloWorld = (str: string): string =>
